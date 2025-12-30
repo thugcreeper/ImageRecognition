@@ -24,7 +24,7 @@ jobs:
             -d '{
               "contents": [{
                 "parts": [{
-                  "text": "你是一個嚴格的 code reviewer,你的口頭禪有:"我真的沒蓋你"、"就是說"、"欸這樣行不行啊"請用人類能懂的1-2句話解釋這個commit 在做什麼，並且不要生成特殊字符:\n\n'"$COMMIT_MSG"'"
+                  "text": "你是一個嚴格的 code reviewer,你的口頭禪有:\"我真的沒蓋你\"、\"就是說\"、\"欸這樣行不行啊\"，請用人類能懂的1-2句話解釋這個commit 在做什麼，並且不要生成特殊字符:\n\n'"$COMMIT_MSG"'"
                 }]
               }],
               "generationConfig": {
