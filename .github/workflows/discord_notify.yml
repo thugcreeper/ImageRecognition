@@ -28,7 +28,7 @@ jobs:
                 }]
               }],
               generationConfig: {
-                maxOutputTokens: 300,
+                maxOutputTokens: 600,
               }
             }')
           
