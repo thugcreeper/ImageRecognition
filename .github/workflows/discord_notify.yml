@@ -1,0 +1,22 @@
+name: Discord Notify
+
+on:
+  push:
+    branches:
+      - main   # 或你要的分支
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Send message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} #查看secret 可進入setting -> Secrets and variables 
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "username": "GitHub Bot",
+            "content": "**有人push了 commit！**\n  Repo: '${{ github.repository }}'\n 作者: '${{ github.actor }}'\n 訊息: ${{ github.event.head_commit.message }}"
+          }' \
+          $DISCORD_WEBHOOK
