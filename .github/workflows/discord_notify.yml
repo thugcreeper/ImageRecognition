@@ -28,7 +28,10 @@ jobs:
                 }]
               }],
               "generationConfig": {
-                "maxOutputTokens": 100
+                "thinkingConfig": {
+                  "thinkingMode": "THINKING_MODE_DISABLED"
+                },
+                "maxOutputTokens": 300
               }
             }')
           
