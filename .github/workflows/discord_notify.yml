@@ -48,9 +48,11 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} #查看secret 可進入setting -> Secrets and variables 
         run: |
           DISCORD_MESSAGE="**有人push了 commit!**
+          - 時間: ${{ github.event.head_commit.timestamp }}
           - Repo: ${{ github.repository }}
-          - 作者: ${{ github.actor }}
-          - 訊息: ${{ github.event.head_commit.message }}
+          - 上傳者: ${{ github.actor }}
+          - commit 標題: ${{ github.event.head_commit.title }}
+          - commit 內容: ${{ github.event.head_commit.message }}
           - 摘要: ${{ steps.ai_summary.outputs.summary }}"
           
           DISCORD_PAYLOAD=$(jq -n \
