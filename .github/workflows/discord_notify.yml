@@ -9,6 +9,8 @@ jobs:
   notify:
     runs-on: ubuntu-latest 
     steps:
+      - name: Install jq
+        run: sudo apt-get install -y jq
       - name: ai_summary
         id: ai_summary
         env:
