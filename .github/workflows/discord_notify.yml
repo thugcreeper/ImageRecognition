@@ -3,7 +3,7 @@ name: Discord Notify
 on:
   push:
     branches:
-      - main   # 或你要的分支
+      - main
 
 jobs:
   notify:
@@ -11,42 +11,46 @@ jobs:
     steps:
       - name: Install jq
         run: sudo apt-get install -y jq
+        
       - name: ai_summary
         id: ai_summary
         env:
-          OPENAI_KEY: ${{ secrets.OPENAI_KEY }} #注意縮排!!!!
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}  #注意縮排!!!!
         run: |
-          RESPONSE=$(curl https://api.openai.com/v1/chat/completions \
+          COMMIT_MSG='${{ github.event.head_commit.message }}'
+          
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_API_KEY" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $OPENAI_KEY" \
             -d '{
-              "model": "gpt-4.1-mini",
-              "messages": [
-                {
-                  "role": "system",
-                  "content": "你是一個嚴格的 code reviewer，請用人類能懂的話解釋這個commit 在做什麼"
-                },
-                {
-                  "role": "user",
-                  "content": "${{ github.event.head_commit.message }}"
-                }
-              ]
+              "contents": [{
+                "parts": [{
+                  "text": "你是一個嚴格的 code reviewer,請用人類能懂的話解釋這個commit 在做什麼:\n\n'"$COMMIT_MSG"'"
+                }]
+              }]
             }')
-          SUMMARY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
-          echo "summary=$SUMMARY" >> $GITHUB_OUTPUT #將摘要輸出到 GitHub Actions 的輸出變數中
+          
+          echo "API Response: $RESPONSE"
+          SUMMARY=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "AI 摘要失敗"')
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Send message to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} #查看secret 可進入setting -> Secrets and variables 
         run: |
+          DISCORD_MESSAGE="**有人push了 commit!**
+          - Repo: ${{ github.repository }}
+          - 作者: ${{ github.actor }}
+          - 訊息: ${{ github.event.head_commit.message }}
+          - 摘要: ${{ steps.ai_summary.outputs.summary }}"
+          
+          DISCORD_PAYLOAD=$(jq -n \
+            --arg username "雜魚老師" \
+            --arg content "$DISCORD_MESSAGE" \
+            '{username: $username, content: $content}')
+          
           curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{
-          \"username\": \"雜魚老師\",
-          \"content\": \"**有人push了 commit!**\n\
-          - Repo: ${{ github.repository }}\n\
-          - 作者: ${{ github.actor }}\n\
-          - 訊息: ${{ github.event.head_commit.message }}\n\
-          - 摘要: ${{ steps.ai_summary.outputs.summary }}\"
-          }" \
-          $DISCORD_WEBHOOK
+            -X POST \
+            -d "$DISCORD_PAYLOAD" \
+            $DISCORD_WEBHOOK
