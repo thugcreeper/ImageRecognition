@@ -43,10 +43,10 @@ jobs:
           -X POST \
           -d "{
             \"username\": \"雜魚老師\",
-            \"content\": \"**有人push了 commit!**\n
-            - Repo: ${{ github.repository }}\n
-            - 作者: ${{ github.actor }}\n
-            - 訊息: ${{ github.event.head_commit.message }}\n
+            \"content\": \"**有人push了 commit!**\n\ #換行符號要用 \n\
+            - Repo: ${{ github.repository }}\n\
+            - 作者: ${{ github.actor }}\n\
+            - 訊息: ${{ github.event.head_commit.message }}\n\
             - 摘要: ${{ steps.ai_summary.outputs.summary }}\"
           }" \
           $DISCORD_WEBHOOK
