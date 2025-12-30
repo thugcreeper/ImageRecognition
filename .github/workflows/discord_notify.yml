@@ -28,9 +28,6 @@ jobs:
                 }]
               }],
               generationConfig: {
-                thinkingConfig: {
-                  thinkingMode: "THINKING_MODE_DISABLED"
-                },
                 maxOutputTokens: 300
               }
             }')
