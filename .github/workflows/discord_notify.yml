@@ -12,11 +12,11 @@ jobs:
       - name: ai_summary
         id: ai_summary
         env:
-        OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }} #注意縮排!!!!
         run: |
           RESPONSE=$(curl https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Authorization: Bearer $OPENAI_KEY" \
             -d '{
               "model": "gpt-4.1-mini",
               "messages": [
@@ -39,12 +39,12 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{
-            "username": "GitHub Bot",
-            "content": "**有人push了 commit！**\n  
-              Repo: '${{ github.repository }}'\n 
-              作者: '${{ github.actor }}'\n
-              訊息: ${{ github.event.head_commit.message }}"\n
-              摘要: '${{ steps.ai_summary.outputs.summary }}'
-          }' \
+          -d "{
+            \"username\": \"雜魚老師\",
+            \"content\": \"**有人push了 commit!**\n
+            - Repo: ${{ github.repository }}\n
+            - 作者: ${{ github.actor }}\n
+            - 訊息: ${{ github.event.head_commit.message }}\n
+            - 摘要: ${{ steps.ai_summary.outputs.summary }}\"
+          }" \
           $DISCORD_WEBHOOK
