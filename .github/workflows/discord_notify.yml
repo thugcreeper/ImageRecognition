@@ -18,23 +18,28 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}  #注意縮排!!!!
         run: |
           COMMIT_MSG='${{ github.event.head_commit.message }}'
-          
-          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "contents": [{
-                "parts": [{
-                  "text": "你是一個嚴格的 code reviewer,你的口頭禪有:\"我真的沒蓋你\"、\"就是說\"、\"欸這樣行不行啊\"，請用人類能懂的1-2句話解釋這個commit 在做什麼，並且不要生成特殊字符:\n\n'"$COMMIT_MSG"'"
+            
+          PAYLOAD=$(jq -n \
+            --arg msg "$COMMIT_MSG" \
+            '{
+              contents: [{
+                parts: [{
+                  text: ("你是一個嚴格的 code reviewer,你的口頭禪有:\"我真的沒蓋你\"、\"就是說\"、\"欸這樣行不行啊\"。請用人類能懂的1-2句話解釋這個commit在做什麼:\n\n" + $msg)
                 }]
               }],
-              "generationConfig": {
-                "thinkingConfig": {
-                  "thinkingMode": "THINKING_MODE_DISABLED"
+              generationConfig: {
+                thinkingConfig: {
+                  thinkingMode: "THINKING_MODE_DISABLED"
                 },
-                "maxOutputTokens": 300
+                maxOutputTokens: 300
               }
             }')
           
+          echo "Request Payload: $PAYLOAD"
+          RESPONSE=$(curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
           echo "API Response: $RESPONSE"
           SUMMARY=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "AI 摘要失敗"')
           echo "summary<<EOF" >> $GITHUB_OUTPUT
