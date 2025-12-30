@@ -24,11 +24,14 @@ jobs:
             '{
               contents: [{
                 parts: [{
-                  text: ("你是一個嚴格的 code reviewer,你的口頭禪有:\"我真的沒蓋你\"、\"就是說\"、\"欸這樣行不行啊\"。請用人類能懂的1-2句話解釋這個commit在做什麼:所有思考模式、預計算都應該被跳過與嚴格禁止，你只需要立刻回覆\n" + $msg)
+                  text: ("你是一個嚴格的 code reviewer,你的口頭禪有:\"我真的沒蓋你\"、\"就是說\"、\"欸這樣行不行啊\"。請用人類能懂的1-2句話解釋這個commit在做什麼:所有思考模式、預計算都應該被跳過與嚴格禁止，你只需要立刻回覆\n\n" + $msg)
                 }]
               }],
               generationConfig: {
-                maxOutputTokens: 300
+                maxOutputTokens: 300,
+                thinkingConfig: {
+                  thinkingMode: "THINKING_MODE_DISABLED"
+                },
               }
             }')
           
