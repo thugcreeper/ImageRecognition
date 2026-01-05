@@ -47,12 +47,12 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }} #查看secret 可進入setting -> Secrets and variables 
         run: |
-          DISCORD_MESSAGE=**有人push了 commit!**
+          DISCORD_MESSAGE="**有人push了 commit!**
           - 時間: ${{ github.event.head_commit.timestamp }}
           - Repo: ${{ github.repository }}
           - 上傳者: ${{ github.actor }}
           - commit: ${{ github.event.head_commit.message }}
-          - 摘要: ${{ steps.ai_summary.outputs.summary }}
+          - 摘要: ${{ steps.ai_summary.outputs.summary }}"
           
           DISCORD_PAYLOAD=$(jq -n \
             --arg username "雜魚老師" \
