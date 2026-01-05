@@ -2,6 +2,8 @@
 練習影像辨識、n8n、CI/CD、github actions等
 
 #專案架構
+
+```
 image-recognition/
 ├─ backend/
 │  ├─ main.py              # FastAPI 入口
@@ -34,4 +36,4 @@ image-recognition/
 ├─ requirements.txt
 ├─ README.md
 └─ .env
-
+```
