@@ -1,0 +1,27 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #8d8e90e8;
+  color: white;
+  border-radius: 8px;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userProfile .username {
+  font-weight: bold;
+}
+
+.login {
+  cursor: pointer;
+}
+
+.icon {
+  display: block;
+}
